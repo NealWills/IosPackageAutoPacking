@@ -1,5 +1,9 @@
 # IosPackageAutoPacking
-IosPackageAutoPacking
+
+` 
+  这里没账号，所以不演示了
+  附上原文件链接: https://github.com/monetking/AutoPacking-iOS
+`
 
 
 ### 1.放在项目根目录
