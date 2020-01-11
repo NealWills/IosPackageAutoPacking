@@ -17,15 +17,15 @@
 __CONSUME_TIME=0
 
 # 【配置上传到蒲公英相关信息】(可选)
-__PGYER_U_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-__PGYER_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+__PGYER_U_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+__PGYER_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # 【配置上传到 Fir】(可选)
-__FIR_API_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+__FIR_API_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # 【配置证书】(如果只有一个证书时该项 可选)
-__CODE_SIGN_DISTRIBUTION="iPhone Distribution: xxxxxxxxxxxxx  Co., Ltd."
-__CODE_SIGN_DEVELOPMENT="iPhone Developer: xxxxxxxxxxxxx  (52GWWH5RY8)"
+__CODE_SIGN_DISTRIBUTION="iPhone Distribution: xxxxxxxxxxxxx Co., Ltd."
+__CODE_SIGN_DEVELOPMENT="iPhone Developer: xxxxxxxxxxxxx (xxxxxxxxxxxxx)"
 
 # 发布APP Store 账号密码
 __IOS_SUBMIT_ACCOUNT="apple id"
@@ -190,12 +190,12 @@ if [ "$__BUNDLE_VERSION_INPUT" == "" ]
 then
   $__BUNDLE_VERSION_INPUT = $__BUNDLE_VERSION
   echo "\033[36:1m↳未输入Bundle Version , 保留原Bundle Version: $__BUNDLE_VERSION"
-elif [ "$__BUNDLE_VERSION_INPUT" == "1" ]
+elif [ "$__BUNDLE_VERSION_INPUT" == "0" ]
 then
   $__BUNDLE_VERSION_INPUT = $__BUNDLE_VERSION
   echo "\033[36:1m↳输入了: $__BUNDLE_VERSION_INPUT , 保留Bundle Version: $__BUNDLE_VERSION"
 else
-  $__BUNDLE_VERSIon=$__BUNDLE_VERSION_INPUT
+  __BUNDLE_VERSION=$__BUNDLE_VERSION_INPUT
   echo "\033[36:1m↳输入了: $__BUNDLE_VERSION_INPUT , 设置Bundle Version: $__BUNDLE_VERSION_INPUT"
 fi
 echo ""
@@ -209,12 +209,12 @@ if [ "$__BUNDLE_BUILD_VERSION_INPUT" == "" ]
 then
   $__BUNDLE_BUILD_VERSION_INPUT = $__BUNDLE_BUILD_VERSION
   echo "\033[36:1m↳未输入Bundle Build Version , 保留原Bundle Build Version: $__BUNDLE_BUILD_VERSION"
-elif [ "$__BUNDLE_BUILD_VERSION_INPUT" == "1" ]
+elif [ "$__BUNDLE_BUILD_VERSION_INPUT" == "0" ]
 then
   $__BUNDLE_BUILD_VERSION_INPUT = $__BUNDLE_BUILD_VERSION
   echo "\033[36:1m↳输入了: $__BUNDLE_BUILD_VERSION_INPUT , 保留原Bundle Build Version: $__BUNDLE_BUILD_VERSION"
 else
-  $__BUNDLE_VERSIon=$__BUNDLE_BUILD_VERSION_INPUT
+  __BUNDLE_BUILD_VERSION=$__BUNDLE_BUILD_VERSION_INPUT
   echo "\033[36:1m↳输入了: $__BUNDLE_BUILD_VERSION_INPUT , 设置Bundle Build Version号为: $__BUNDLE_BUILD_VERSION_INPUT"
 fi
 echo ""
@@ -239,11 +239,11 @@ fi
 
 #修改版本号
 #xcrun agvtool new-marketing-version
-xcrun agvtool new-marketing-version "$__BUNDLE_VERSION_INPUT"
+xcrun agvtool new-marketing-version "$__BUNDLE_VERSION"
 
 #xcrun agvtool next-version -all
 #设置编译版本
-xcrun agvtool new-version -all "$__BUNDLE_BUILD_VERSION_INPUT"
+xcrun agvtool new-version -all "$__BUNDLE_BUILD_VERSION"
 
 sleep 1
 
@@ -290,7 +290,7 @@ function print_packing_message() {
   printMessage "包名: $__BUNDLE_Name"
   printMessage "打包环境: $__BUILD_METHOD_NAME"
   printMessage "打包类型: ${__BUILD_CONFIGURATION}"
-  printMessage "当前版本 Bundle Version: ${__BUNDLE_VERSION_INPUT}"
+  printMessage "当前版本 Bundle Version: ${__BUNDLE_VERSION}"
   printMessage "当前版本 Bundle Build Version: ${__BUNDLE_BUILD_VERSION}"
   printMessage "测试版发布位置: $__UPLOAD_IPA_PLACE"
   printMessage "工程目录: ${__PROGECT_PATH}"
