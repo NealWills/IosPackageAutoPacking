@@ -17,18 +17,18 @@
 __CONSUME_TIME=0
 
 # 【配置上传到蒲公英相关信息】(可选)
-__PGYER_U_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-__PGYER_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+__PGYER_U_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+__PGYER_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # 【配置上传到 Fir】(可选)
-__FIR_API_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+__FIR_API_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # 【配置证书】(如果只有一个证书时该项 可选)
-__CODE_SIGN_DISTRIBUTION="iPhone Distribution: xxxxxxxxxxxx Co., Ltd."
-__CODE_SIGN_DEVELOPMENT="iPhone Developer: xxxxxxxxx (xxxxxxxxx)"
+__CODE_SIGN_DISTRIBUTION="iPhone Distribution: xxxxxxxxxxxxx  Co., Ltd."
+__CODE_SIGN_DEVELOPMENT="iPhone Developer: xxxxxxxxxxxxx  (52GWWH5RY8)"
 
 # 发布APP Store 账号密码
-__IOS_SUBMIT_ACCOUNT="xxxxxxx"
+__IOS_SUBMIT_ACCOUNT="apple id"
 __IOS_SUBMIT_PASSWORD="xxxxxx"
 
 # ==================== 公共部分 =====================
@@ -153,7 +153,6 @@ elif [[ $__UPLOAD_IPA_OPTION -eq 3 ]]; then
   __UPLOAD_IPA_PLACE="Fir Im"
 fi
 
-echo ""
 echo "\033[36:1m↳输入了: $__UPLOAD_IPA_OPTION , 测试版发布位置为: $__UPLOAD_IPA_PLACE "
 echo ""
 
@@ -184,25 +183,45 @@ __BUNDLE_BUILD_VERSION=`/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ${__C
 # input Bundle Version
 __BUNDLE_VERSION_INPUT="0"
 
-## 5.设置版本号
-echo "${__TITLE_LEFT_COLOR}请输入版本号,输入0或回车视为不更改版本号(当前版本号:$__BUNDLE_VERSION) ${__TITLE_RIGHT_COLOR}"
+## 5.设置Bundle Version
+echo "${__TITLE_LEFT_COLOR}请输入Bundle Version,输入0或回车视为不更改Bundle Version(当前Bundle Version:$__BUNDLE_VERSION) ${__TITLE_RIGHT_COLOR}"
 read __BUNDLE_VERSION_INPUT
 if [ "$__BUNDLE_VERSION_INPUT" == "" ]
 then
   $__BUNDLE_VERSION_INPUT = $__BUNDLE_VERSION
-  echo "\033[36:1m↳未输入版本号 , 保留原版本号: $__BUNDLE_VERSION"
+  echo "\033[36:1m↳未输入Bundle Version , 保留原Bundle Version: $__BUNDLE_VERSION"
 elif [ "$__BUNDLE_VERSION_INPUT" == "1" ]
 then
   $__BUNDLE_VERSION_INPUT = $__BUNDLE_VERSION
-  echo "\033[36:1m↳输入了: $__BUNDLE_VERSION_INPUT , 保留原版本号: $__BUNDLE_VERSION"
+  echo "\033[36:1m↳输入了: $__BUNDLE_VERSION_INPUT , 保留Bundle Version: $__BUNDLE_VERSION"
 else
   $__BUNDLE_VERSIon=$__BUNDLE_VERSION_INPUT
-  echo "\033[36:1m↳输入了: $__BUNDLE_VERSION_INPUT , 设置版本号为: $__BUNDLE_VERSION_INPUT , Build 版本号将在打包开始时自动设置"
+  echo "\033[36:1m↳输入了: $__BUNDLE_VERSION_INPUT , 设置Bundle Version: $__BUNDLE_VERSION_INPUT"
+fi
+echo ""
+
+__BUNDLE_BUILD_VERSION_INPUT="0"
+
+## 6.Bundle Build Version
+echo "${__TITLE_LEFT_COLOR}请输入Bundle Build Version,输入0或回车视为不更改Bundle Build Version(当前Bundle Build Version:$__BUNDLE_BUILD_VERSION) ${__TITLE_RIGHT_COLOR}"
+read __BUNDLE_BUILD_VERSION_INPUT
+if [ "$__BUNDLE_BUILD_VERSION_INPUT" == "" ]
+then
+  $__BUNDLE_BUILD_VERSION_INPUT = $__BUNDLE_BUILD_VERSION
+  echo "\033[36:1m↳未输入Bundle Build Version , 保留原Bundle Build Version: $__BUNDLE_BUILD_VERSION"
+elif [ "$__BUNDLE_BUILD_VERSION_INPUT" == "1" ]
+then
+  $__BUNDLE_BUILD_VERSION_INPUT = $__BUNDLE_BUILD_VERSION
+  echo "\033[36:1m↳输入了: $__BUNDLE_BUILD_VERSION_INPUT , 保留原Bundle Build Version: $__BUNDLE_BUILD_VERSION"
+else
+  $__BUNDLE_VERSIon=$__BUNDLE_BUILD_VERSION_INPUT
+  echo "\033[36:1m↳输入了: $__BUNDLE_BUILD_VERSION_INPUT , 设置Bundle Build Version号为: $__BUNDLE_BUILD_VERSION_INPUT"
 fi
 echo ""
 
 
-# 6. 是否立即开始打包
+
+# 7. 是否立即开始打包
 __IS_NOW_STAR_PACKINGS=("1.是" "2.否")
 READ_USER_INPUT "是否立即开始打包: " "${__IS_NOW_STAR_PACKINGS[*]}" ${#__IS_NOW_STAR_PACKINGS[*]}
 
@@ -222,10 +241,9 @@ fi
 #xcrun agvtool new-marketing-version
 xcrun agvtool new-marketing-version "$__BUNDLE_VERSION_INPUT"
 
-#自动增加编译版本 +1
 #xcrun agvtool next-version -all
-#设置编译版本为当前时间
-xcrun agvtool new-version -all $(date +%Y%m%d%H%M)
+#设置编译版本
+xcrun agvtool new-version -all "$__BUNDLE_BUILD_VERSION_INPUT"
 
 sleep 1
 
@@ -272,7 +290,8 @@ function print_packing_message() {
   printMessage "包名: $__BUNDLE_Name"
   printMessage "打包环境: $__BUILD_METHOD_NAME"
   printMessage "打包类型: ${__BUILD_CONFIGURATION}"
-  printMessage "当前版本: ${__BUNDLE_VERSION_INPUT}.${__BUNDLE_BUILD_VERSION}"
+  printMessage "当前版本 Bundle Version: ${__BUNDLE_VERSION_INPUT}"
+  printMessage "当前版本 Bundle Build Version: ${__BUNDLE_BUILD_VERSION}"
   printMessage "测试版发布位置: $__UPLOAD_IPA_PLACE"
   printMessage "工程目录: ${__PROGECT_PATH}"
   printMessage "当前Info.plist路径: ${__CURRENT_INFO_PLIST_PATH}"
